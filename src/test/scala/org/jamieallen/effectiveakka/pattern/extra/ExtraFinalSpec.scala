@@ -1,12 +1,12 @@
 package org.jamieallen.effectiveakka.pattern.extra
 
-import akka.testkit.{ TestKit, TestProbe, ImplicitSender }
-import akka.actor.{ Actor, ActorLogging, ActorSystem, Props }
-import org.scalatest.WordSpecLike
-import org.scalatest.matchers.MustMatchers
-import scala.concurrent.duration._
+import akka.actor.{ActorSystem, Props}
+import akka.testkit.{ImplicitSender, TestKit, TestProbe}
 import org.jamieallen.effectiveakka.common._
 import org.jamieallen.effectiveakka.pattern.extra.AccountBalanceRetrieverFinal._
+import org.scalatest.{MustMatchers, WordSpecLike}
+
+import scala.concurrent.duration._
 
 class ExtraFinalSpec extends TestKit(ActorSystem("ExtraTestAS")) with ImplicitSender with WordSpecLike with MustMatchers {
   "An AccountBalanceRetriever" should {
@@ -21,12 +21,13 @@ class ExtraFinalSpec extends TestKit(ActorSystem("ExtraTestAS")) with ImplicitSe
       within(300 milliseconds) {
         probe1.send(accountBalanceRetriever, GetCustomerAccountBalances(1L))
         val result = probe1.expectMsgType[AccountBalances]
-        result must equal(AccountBalances(Some(List((3, 15000))), Some(List((1, 150000), (2, 29000))), Some(List())))
+        result must equal(AccountBalances(Some(List((3L, BigDecimal(15000)))), Some(List((1L, BigDecimal(150000)), (2L, BigDecimal(29000)))), Some(List())))
       }
       within(300 milliseconds) {
         probe2.send(accountBalanceRetriever, GetCustomerAccountBalances(2L))
         val result = probe2.expectMsgType[AccountBalances]
-        result must equal(AccountBalances(Some(List((6, 640000), (7, 1125000), (8, 40000))), Some(List((5, 80000))), Some(List((9, 640000), (10, 1125000), (11, 40000)))))
+        result must equal(AccountBalances(Some(List((6L, BigDecimal(640000)), (7L, BigDecimal(1125000)), (8L, BigDecimal(40000)))),
+          Some(List((5L, BigDecimal(80000)))), Some(List((9L, BigDecimal(640000)), (10L, BigDecimal(1125000)), (11L, BigDecimal(40000))))))
       }
     }
 

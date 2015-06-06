@@ -4,12 +4,14 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 import akka.util.Timeout
 import org.jamieallen.effectiveakka.common._
-import akka.actor.{ Actor, ActorRef }
+import akka.actor.{Actor, ActorRef}
 import akka.pattern.ask
 
-class AccountBalanceRetriever1(savingsAccounts: ActorRef, checkingAccounts: ActorRef, moneyMarketAccounts: ActorRef) extends Actor {
+class AccountBalanceRetriever1(savingsAccounts: ActorRef, checkingAccounts: ActorRef, moneyMarketAccounts: ActorRef)
+  extends Actor {
   implicit val timeout: Timeout = 100 milliseconds
   implicit val ec: ExecutionContext = context.dispatcher
+
   def receive = {
     case GetCustomerAccountBalances(id) =>
       val futSavings = savingsAccounts ? GetCustomerAccountBalances(id)
